@@ -2,17 +2,17 @@ package aloksharma.ads.part1;
 
 public class Node {
 	private int data;
-	private int degree;
-	private int priority;
+	public int degree;
+	public double priority;
 	
 	public Node prev;
 	public Node next;
 	public Node parent;
 	public Node child;
 	
-	private Boolean childCut;
+	public Boolean childCut;
 	
-	public Node(int data, int priority){
+	public Node(int data, double priority){
 		this.data = data;
 		this.childCut = false;
 		this.priority = priority;
@@ -21,16 +21,8 @@ public class Node {
 	/*
 	 * Setter methods.
 	 */
-	public void setPriority(int priority){
-		this.priority = priority;
-	}
-	
 	public void setData(int data){
 		this.data = data;
-	}
-	
-	public void setChildCut(Boolean childCut){
-		this.childCut = childCut;
 	}
 	
 	/*
@@ -39,13 +31,4 @@ public class Node {
 	public int getData(){
 		return data;
 	}
-	
-	public boolean isChildCut(){
-		return childCut;
-	}
-	
-	public int getPriority(){
-		return priority;
-	}
-	
 }
