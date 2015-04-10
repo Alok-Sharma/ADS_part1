@@ -11,13 +11,16 @@ public class UndirectedGraph {
 	
 	public static void main(String[] args) throws Exception {
 		
+//		String inputFileName = "input_5000_1_part1.txt";
 //		String inputFileName = "sample_input_part1.txt";
-//		int source = 0;
-//		int dest = 4;
+		String inputFileName = "input_1000_50_part1.txt";
 		
-		String inputFileName = args[0];
-		int source = Integer.parseInt(args[1]);
-		int dest = Integer.parseInt(args[2]);
+		int source = 0;
+		int dest = 999;
+		
+//		String inputFileName = args[0];
+//		int source = Integer.parseInt(args[1]);
+//		int dest = Integer.parseInt(args[2]);
 		
 		dijkstra = new Dijkstra(source, dest);
 		readInputFromFile(inputFileName);
@@ -38,9 +41,11 @@ public class UndirectedGraph {
 		
 		while(reader.readLine() != null){
 			String line = reader.readLine();
-			int node1 = Character.getNumericValue(line.charAt(0));
-			int node2 = Character.getNumericValue(line.charAt(2));
-			double weight = Character.getNumericValue(line.charAt(4));
+			String[] lineSplit = line.split(" ");
+			
+			int node1 = Integer.parseInt(lineSplit[0]);
+			int node2 = Integer.parseInt(lineSplit[1]);
+			double weight = Double.parseDouble(lineSplit[2]);
 			makeEdge(node1, node2, weight);
 		}
 		reader.close();
