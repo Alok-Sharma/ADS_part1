@@ -126,6 +126,10 @@ public class Dijkstra {
 		}
 	}
 	
+	public DijkstraNode getDestNode(){
+		return nodeList.get(destination);
+	}
+	
 	
 	public void printGraph(){
 		Iterator<Integer> iterator = nodeList.keySet().iterator();
