@@ -9,7 +9,7 @@ public class FibonacciHeap {
 	Node minNode = null;
 	int heapSize = 0;
 	
-	public Node enqueue(int data, double priority){
+	public Node insertNode(int data, double priority){
 		Node newNode = new Node(data, priority);
 		minNode = mergeLists(minNode, newNode);
 		heapSize++;
@@ -113,6 +113,26 @@ public class FibonacciHeap {
 			return two;
 		}else if(one != null && two == null){
 			return one;
+		}else if(one.next == null && two.next == null){
+			one.next = two;
+			one.prev = two;
+			two.next = one;
+			two.prev = one;
+			return one.priority < two.priority ? one : two;
+		}else if(one.next == null && two.next != null){
+			Node twoNext = two.next;
+			two.next = one;
+			one.prev = two;
+			one.next = twoNext;
+			twoNext.prev = one;
+			return one.priority < two.priority ? one : two;
+		}else if(one.next != null && two.next == null){
+			Node oneNext = one.next;
+			one.next = two;
+			two.prev = one;
+			two.next = oneNext;
+			oneNext.prev = two;
+			return one.priority < two.priority ? one : two;
 		}else{
 			//both aren't null, merge them.
 			Node oneNext = one.next;
@@ -131,13 +151,13 @@ public class FibonacciHeap {
 		
 		node.priority = newPriority;
 		if(node.parent != null && node.priority <= node.parent.priority)
-			cutNode(node);
+			removeNode(node);
 		
 		if(node.priority <= minNode.priority)
 			minNode = node;
 	}
 	
-	private void cutNode(Node node){
+	private void removeNode(Node node){
 		node.childCut = false;
 		
 		if(node.parent == null) return; //if no parents, do nothing.
@@ -163,7 +183,7 @@ public class FibonacciHeap {
 		minNode = mergeLists(minNode, node);
 		
 		if(node.parent.childCut)
-			cutNode(node.parent);
+			removeNode(node.parent);
 		else
 			node.parent.childCut = true;
 		
