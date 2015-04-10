@@ -24,16 +24,18 @@ public class UndirectedGraph {
 			String line = reader.readLine();
 			int node1 = Character.getNumericValue(line.charAt(0));
 			int node2 = Character.getNumericValue(line.charAt(2));
-			int weight = Character.getNumericValue(line.charAt(4));
+			double weight = Character.getNumericValue(line.charAt(4));
 			makeEdge(node1, node2, weight);
 		}
 		dijkstra.printGraph();
+		dijkstra.findShortestPath();
+		dijkstra.printPath();
 		reader.close();
 		input_file.close();
 	}
 	
-	private void makeEdge(int node1, int node2, int weight){
-		System.out.println("node1: " + node1 + " node2: " + node2 + " weight: " + weight);
+	private void makeEdge(int node1, int node2, double weight){
+//		System.out.println("node1: " + node1 + " node2: " + node2 + " weight: " + weight);
 		dijkstra.insertEdge(node1, node2, weight);
 	}
 }

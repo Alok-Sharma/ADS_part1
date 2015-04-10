@@ -1,19 +1,26 @@
 package aloksharma.ads.part1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 //merge function not implemented.
 public class FibonacciHeap {
 	
 	Node minNode = null;
+	HashMap<Integer, Node> nodeList = new HashMap<>();
 	int heapSize = 0;
 	
 	public Node insertNode(int data, double priority){
 		Node newNode = new Node(data, priority);
 		minNode = mergeLists(minNode, newNode);
 		heapSize++;
+		nodeList.put(data, newNode);
 		return newNode;
+	}
+	
+	public Node getNodeInstance(int data){
+		return nodeList.get(data);
 	}
 	
 	public Node getMin(){
