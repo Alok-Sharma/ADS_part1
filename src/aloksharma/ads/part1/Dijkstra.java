@@ -70,7 +70,7 @@ public class Dijkstra {
 		while(dijkstraNodes.hasNext()){
 			//remove the minimum element
 			dijkstraNodes.next();
-			Node minHeapNode = heap.removeMin();
+			HeapNode minHeapNode = heap.removeMin();
 			DijkstraNode pathNode = nodeList.get(minHeapNode.getData());
 			pathNodes.add(pathNode);
 //			System.out.println(pathNode.getNodeId());
@@ -96,7 +96,7 @@ public class Dijkstra {
 					neighbourNode.setSourceDistance(dijkstraDistance);
 					neighbourNode.parentNode = pathNode;
 					//how to perform decrease key? Have node instance? Had to create a nodeList in the heap to store node instances.
-					Node heapNode = heap.getNodeInstance(neighbourNode.getNodeId());
+					HeapNode heapNode = heap.getNodeInstance(neighbourNode.getNodeId());
 					heap.decreaseKey(heapNode, dijkstraDistance);
 				}
 			}

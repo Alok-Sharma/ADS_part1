@@ -7,23 +7,23 @@ import java.util.List;
 //merge function not implemented.
 public class FibonacciHeap {
 	
-	Node minNode = null;
-	HashMap<Integer, Node> nodeList = new HashMap<>();
+	HeapNode minNode = null;
+	HashMap<Integer, HeapNode> nodeList = new HashMap<>();
 	int heapSize = 0;
 	
-	public Node insertNode(int data, double priority){
-		Node newNode = new Node(data, priority);
+	public HeapNode insertNode(int data, double priority){
+		HeapNode newNode = new HeapNode(data, priority);
 		minNode = mergeLists(minNode, newNode);
 		heapSize++;
 		nodeList.put(data, newNode);
 		return newNode;
 	}
 	
-	public Node getNodeInstance(int data){
+	public HeapNode getNodeInstance(int data){
 		return nodeList.get(data);
 	}
 	
-	public Node getMin(){
+	public HeapNode getMin(){
 		return minNode;
 	}
 	
@@ -31,11 +31,11 @@ public class FibonacciHeap {
 		return heapSize;
 	}
 	
-	public Node removeMin(){
+	public HeapNode removeMin(){
 		if(minNode == null)
 			return null;
 		
-		Node minCopy = minNode;
+		HeapNode minCopy = minNode;
 		heapSize--;
 		
 		//case 1, min node is alone.
@@ -52,7 +52,7 @@ public class FibonacciHeap {
 		
 		//clear parent field of all children of minNode.
 		if(minCopy.child != null){
-			Node child = minCopy.child;
+			HeapNode child = minCopy.child;
 			do{
 				child.parent = null;
 				child = child.next;
@@ -66,15 +66,15 @@ public class FibonacciHeap {
 		//merge children of min node. Subtress of same degrees need to be merged. All then should be put in top list.
 		//To keep track of trees with varied degrees, keep in arraylist, where index is their degree.
 		//If more than 1 sub tree of same degree, merge them first.
-		List<Node> treeTable = new ArrayList<>();
+		List<HeapNode> treeTable = new ArrayList<>();
 		
-		List<Node> toVisit = new ArrayList<>();
+		List<HeapNode> toVisit = new ArrayList<>();
 		
-		for(Node currNode = minNode; toVisit.isEmpty() || toVisit.get(0) != currNode; currNode = currNode.next){
+		for(HeapNode currNode = minNode; toVisit.isEmpty() || toVisit.get(0) != currNode; currNode = currNode.next){
 			toVisit.add(currNode);
 		}
 		
-		for(Node curr : toVisit){
+		for(HeapNode curr : toVisit){
 			while(true){
 				
 				while(curr.degree >= treeTable.size()){
@@ -86,12 +86,12 @@ public class FibonacciHeap {
 					break;
 				}
 				
-				Node existing = treeTable.get(curr.degree);
+				HeapNode existing = treeTable.get(curr.degree);
 				treeTable.set(curr.degree, null);
 				
 				//find out which is the larger degree
-				Node min = (existing.priority < curr.priority)? existing : curr;
-				Node max = (existing.priority < curr.priority)? curr : existing;
+				HeapNode min = (existing.priority < curr.priority)? existing : curr;
+				HeapNode max = (existing.priority < curr.priority)? curr : existing;
 				
 				//remove max out of root list, and make child of min.
 				max.next.prev = max.prev;
@@ -113,7 +113,7 @@ public class FibonacciHeap {
 		
 	}
 	
-	private Node mergeLists(Node one, Node two){
+	private HeapNode mergeLists(HeapNode one, HeapNode two){
 		if(one == null && two == null){
 			return null;
 		}else if(one == null && two != null){
@@ -127,14 +127,14 @@ public class FibonacciHeap {
 			two.prev = one;
 			return one.priority < two.priority ? one : two;
 		}else if(one.next == null && two.next != null){
-			Node twoNext = two.next;
+			HeapNode twoNext = two.next;
 			two.next = one;
 			one.prev = two;
 			one.next = twoNext;
 			twoNext.prev = one;
 			return one.priority < two.priority ? one : two;
 		}else if(one.next != null && two.next == null){
-			Node oneNext = one.next;
+			HeapNode oneNext = one.next;
 			one.next = two;
 			two.prev = one;
 			two.next = oneNext;
@@ -142,7 +142,7 @@ public class FibonacciHeap {
 			return one.priority < two.priority ? one : two;
 		}else{
 			//both aren't null, merge them.
-			Node oneNext = one.next;
+			HeapNode oneNext = one.next;
 			one.next = two.next;
 			one.next.prev = one;
 			two.next = oneNext;
@@ -152,7 +152,7 @@ public class FibonacciHeap {
 		}
 	}
 	
-	public void decreaseKey(Node node, double newPriority){
+	public void decreaseKey(HeapNode node, double newPriority){
 		if(newPriority > node.priority)
 			System.err.println("New priority exceeds old");
 		
@@ -164,7 +164,7 @@ public class FibonacciHeap {
 			minNode = node;
 	}
 	
-	private void removeNode(Node node){
+	private void removeNode(HeapNode node){
 		node.childCut = false;
 		
 		if(node.parent == null) return; //if no parents, do nothing.
@@ -197,7 +197,7 @@ public class FibonacciHeap {
 		node.parent = null;
 	}
 	
-	public void deleteNode(Node node){
+	public void deleteNode(HeapNode node){
 		decreaseKey(node, Double.NEGATIVE_INFINITY);
 		
 		removeMin();

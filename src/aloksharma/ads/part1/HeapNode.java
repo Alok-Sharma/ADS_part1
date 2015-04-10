@@ -1,18 +1,18 @@
 package aloksharma.ads.part1;
 
-public class Node {
+public class HeapNode {
 	private int data;
 	public int degree;
 	public double priority;
 	
-	public Node prev;
-	public Node next;
-	public Node parent;
-	public Node child;
+	public HeapNode prev;
+	public HeapNode next;
+	public HeapNode parent;
+	public HeapNode child;
 	
 	public Boolean childCut;
 	
-	public Node(int data, double priority){
+	public HeapNode(int data, double priority){
 		this.data = data;
 		this.childCut = false;
 		this.priority = priority;

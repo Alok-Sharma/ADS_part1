@@ -4,15 +4,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class UndirectedGraph {
-	Dijkstra dijkstra;
-	public UndirectedGraph() throws Exception{
+	static Dijkstra dijkstra;
+	
+	public static void main(String[] args) throws Exception {
 		int randomSource = 0;
 		int randomDest = 4;
 		dijkstra = new Dijkstra(randomSource, randomDest);
 		readFromFile();
 	}
+	
 
-	private void readFromFile() throws Exception{
+	private static void readFromFile() throws Exception{
 		FileReader input_file = new FileReader("sample_input_part1.txt");
 		BufferedReader reader = new BufferedReader(input_file);
 		
@@ -34,7 +36,7 @@ public class UndirectedGraph {
 		input_file.close();
 	}
 	
-	private void makeEdge(int node1, int node2, double weight){
+	private static void makeEdge(int node1, int node2, double weight){
 //		System.out.println("node1: " + node1 + " node2: " + node2 + " weight: " + weight);
 		dijkstra.insertEdge(node1, node2, weight);
 	}
