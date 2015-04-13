@@ -13,10 +13,12 @@ public class UndirectedGraph {
 		
 //		String inputFileName = "input_5000_1_part1.txt";
 //		String inputFileName = "sample_input_part1.txt";
-		String inputFileName = "input_1000_50_part1.txt";
+//		String inputFileName = "input_1000_50_part1.txt";
+		String inputFileName = "input_1000000.txt";
 		
 		int source = 0;
-		int dest = 999;
+		int dest = 999999;
+//		int dest = 999;
 		
 //		String inputFileName = args[0];
 //		int source = Integer.parseInt(args[1]);
@@ -41,6 +43,9 @@ public class UndirectedGraph {
 		
 		while(reader.readLine() != null){
 			String line = reader.readLine();
+			if(line == null){
+				break;
+			}
 			String[] lineSplit = line.split(" ");
 			
 			int node1 = Integer.parseInt(lineSplit[0]);
@@ -50,6 +55,7 @@ public class UndirectedGraph {
 		}
 		reader.close();
 		input_file.close();
+		System.out.println("read the fucking file and inserted all into dijkstra");
 	}
 	
 	private static void makeEdge(int node1, int node2, double weight){
@@ -58,7 +64,6 @@ public class UndirectedGraph {
 	}
 	
 	private static void writeOutputToFile(DijkstraNode dest) throws Exception{
-		System.out.println("Output to file:");
 		String distance = (int)dest.getSourceDistance() + "";
 		String path = dest.getNodeId() + "";
 		
@@ -70,11 +75,5 @@ public class UndirectedGraph {
 		
 		System.out.println(distance);
 		System.out.println(path);
-
-		FileWriter output_file = new FileWriter(new File("output.txt"));
-		output_file.write(distance);
-		output_file.write(System.lineSeparator());
-		output_file.write(path);
-		output_file.close();
 	}
 }

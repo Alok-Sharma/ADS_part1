@@ -1,0 +1,196 @@
+package aloksharma.ads.part2;
+
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.sun.org.apache.xml.internal.utils.Trie;
+
+public class BinaryTrie {
+	public TrieNode rootNode;
+	
+	public BinaryTrie(){
+		rootNode = new TrieNode();
+		rootNode.isLeaf = false;
+	}
+	
+	public void insert(String destinationIP, String nextHop){
+		TrieNode currNode = search(destinationIP);
+		
+		TrieNode newNode = new TrieNode();
+		newNode.destinationIP = destinationIP;
+		newNode.nextHopIP = nextHop;
+
+		if(currNode.isLeaf == false){
+			/*
+			 * if the search returned back a non-leaf node, then 
+			 * insert the new node as a child of this node.
+			 */
+			currNode.addChild(newNode);
+			//System.out.println("added child");
+		}else{
+			/*
+			 * You reached a leaf node.
+			 */
+			TrieNode parent = currNode.parentNode;
+			int parentLvl = parent.level;
+			//compare substrings after the parent level index.
+			String currDestSubstring = currNode.destinationIP.substring(parentLvl);
+			String newDestSubstring = newNode.destinationIP.substring(parentLvl);
+			
+			//compare these substrings and see how many nodes need to be put in.
+			int i = 0;
+			for(i = 0; i < currDestSubstring.length(); i++){
+				if(currDestSubstring.charAt(i) != newDestSubstring.charAt(i)){
+					break;
+				}else{
+					/*
+					 * if the two characters are same at that point, insert a new node.
+					 * This new node should either be a left or a right child depending on what
+					 * is the char value at this point of the two substrings.
+					 */
+					TrieNode newIntermediateNode = new TrieNode();
+					newIntermediateNode.isLeaf = false;
+					newIntermediateNode.level = parent.level + 1;
+					
+					//BE CAREFUL, NOT USING ADDCHILD FUNCTION HERE!
+					if(currDestSubstring.charAt(i) == '0'){
+						parent.leftChild = newIntermediateNode;
+						newIntermediateNode.prefix = parent.prefix + "0";
+					}else{
+						parent.rightChild = newIntermediateNode;
+						newIntermediateNode.prefix = parent.prefix + "1";
+					}
+					parent = newIntermediateNode;
+				}
+			}
+			
+			/*
+			 * Now all intermediate nodes have been put in. Insert the newNode and the currNode
+			 * as children of the parent.
+			 */
+			parent.addChild(newNode);
+			parent.addChild(currNode); //Hopefully these two wouldve been put as left and right children, instead of just fighting for the same spot.
+//			System.out.println("added child after splits");
+		}
+	}
+	
+	/*
+	 * returns TrieNode where search ended. If the returned TrieNode
+	 * has isLeaf true, then there is a nextHopIP for this destinationIP,
+	 * else, I found no rule for this destination. Longest prefix matched TrieNode will be returned.
+	 * 
+	 */
+	public TrieNode search(String destinationIP){
+		//break the destinationIP. 
+		//Iterate over the integers. If 0, get left child, else get right.
+		//if isLeaf = true, extract data from it.
+		TrieNode currNode = rootNode;
+		TrieNode child;
+		
+		for(int i = 0; i < destinationIP.length() ; i++){
+			int digit = Integer.parseInt(destinationIP.substring(i, i+1));
+			if(digit == 0){
+				child = currNode.leftChild;
+			}else{
+				child = currNode.rightChild;
+			}
+			
+			if(child == null && currNode.isLeaf == false){
+				//I have no rule for this destinationIP
+				return currNode;
+			}else if(child == null && currNode.isLeaf == true){
+				/*
+				 * I ended up at a leaf node. This may or may not be the exact destination you are looking for.
+				 */
+				return currNode;
+			}else{
+				//child != null, so go to my child.
+				currNode = child;
+			}
+		}
+		
+		return null;
+	}
+	
+	/*
+	 * Returns the nextHopIP address only if the destinationIP was found.
+	 * If you want to use longest prefix matching, then use the search() function instead.
+	 */
+	public String searchExactDestination(String destinationIP){
+		TrieNode result = search(destinationIP);
+		
+		if(destinationIP.equals(result.destinationIP)){
+			return result.nextHopIP;
+		}else{
+			return null;
+		}
+	}
+	
+	/*
+	 * currNode = rootNode
+	 */
+	String DONT_MERGE = "dont merge";
+	public String merge(TrieNode currNode){
+		if(currNode == null){
+			return null;
+		}else if(!currNode.isLeaf){
+			//I'm not a leaf node. Do the post order traversal and get the value of my children.
+			String leftNextHop = merge(currNode.leftChild);
+			String rightNextHop= merge(currNode.rightChild);
+
+			if(leftNextHop == DONT_MERGE || rightNextHop == DONT_MERGE){
+				return DONT_MERGE;
+			}else if(leftNextHop == null){
+				currNode.isLeaf = true;
+				currNode.nextHopIP = rightNextHop;
+				currNode.rightChild = null;
+				currNode.leftChild = null;
+			}else if(rightNextHop == null){
+				currNode.isLeaf = true;
+				currNode.nextHopIP = leftNextHop;
+				currNode.rightChild = null;
+				currNode.leftChild = null;
+			}else if(leftNextHop == rightNextHop){
+				//make me the child, and take that value.
+				currNode.isLeaf = true;
+				currNode.nextHopIP = leftNextHop; //or rightNextHop
+				currNode.rightChild = null;
+				currNode.leftChild = null;
+			}else{
+				return DONT_MERGE;
+			}
+			
+			return currNode.nextHopIP;
+		}else{
+			//I'm a leaf node, just return my value.
+			return currNode.nextHopIP;
+		}
+	}
+	
+	public void printTrie(){
+		TrieNode currNode;
+		Queue<TrieNode> q = new LinkedList<TrieNode>();
+		q.add(rootNode);
+		while(!q.isEmpty()){
+			currNode = q.remove();
+			if(!currNode.isLeaf){
+				System.out.println(currNode.prefix);
+			}else{
+				System.out.println(currNode.prefix + " next hop:" + currNode.nextHopIP);
+			}
+			
+			if(currNode.leftChild != null){
+//				System.out.println("left: " + currNode.leftChild.level);
+				q.add(currNode.leftChild);
+			}
+			if(currNode.rightChild != null){
+//				System.out.println("right: " + currNode.rightChild.level);
+				q.add(currNode.rightChild);
+			}
+			
+		}
+	}
+}

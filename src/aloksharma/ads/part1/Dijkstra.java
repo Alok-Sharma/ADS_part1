@@ -59,7 +59,7 @@ public class Dijkstra {
 			
 			heap.insertNode(nodeId, sourceDist);
 		}
-//		System.out.println("min: " + heap.getMin().getData()); //should be the source.
+		System.out.println("added all nodes to the heap, iterating over them now.");
 		
 		//store all nodes that are on your shortes path in here:
 		ArrayList<DijkstraNode> pathNodes = new ArrayList<>();
@@ -73,9 +73,9 @@ public class Dijkstra {
 			HeapNode minHeapNode = heap.removeMin();
 			DijkstraNode pathNode = nodeList.get(minHeapNode.getData());
 			pathNodes.add(pathNode);
-//			System.out.println(pathNode.getNodeId());
 			
 			if(pathNode.getNodeId() == destNode.getNodeId()){
+				System.out.println("reached destination");
 				break;
 			}
 			
