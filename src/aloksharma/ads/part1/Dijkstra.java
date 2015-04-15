@@ -40,6 +40,9 @@ public class Dijkstra {
 		dnode2.addNeighbour(dnode1, weight);
 	}
 	
+	/*
+	 * Called to rest each nodes 
+	 */
 	private void resetNodes(){
 		//iterate over all nodes in the nodelist and call their reset function.
 		Iterator<Integer> allDijkstraNodes = nodeList.keySet().iterator();
@@ -70,7 +73,6 @@ public class Dijkstra {
 			
 			heap.insertNode(nodeId, sourceDist);
 		}
-//		System.out.println("added all nodes to the heap, iterating over them now.");
 		
 		//store all nodes that are on your shortest path in here:
 		ArrayList<DijkstraNode> pathNodes = new ArrayList<>();
@@ -93,7 +95,7 @@ public class Dijkstra {
 			HashMap<DijkstraNode, Double> neighbours =  pathNode.getAllNeighbours();
 			
 			//remove nodes that are already on the shortest path.
-//			neighbours = removeFromNeighbours(neighbours, pathNodes);
+			//Neighbours = removeFromNeighbours(neighbours, pathNodes);
 			
 			Iterator<DijkstraNode> neighbourIterator = neighbours.keySet().iterator();
 			while(neighbourIterator.hasNext()){

@@ -1,7 +1,6 @@
 package aloksharma.ads.part2;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -22,17 +21,16 @@ public class routing {
 	
 	public static void main(String[] args) {
 		
+		String inputGraphFileName = args[0];
+		String inputIPFileName = args[1];
+		int source = Integer.parseInt(args[2]);
+		int dest = Integer.parseInt(args[3]);
 		
-		String inputGraphFileName = "input_graphsmall_part2.txt";
-		String inputIPFilename = "input_ipsmall_part2.txt";
-		
-		int source = 0;
-		int dest = 3;
 		dijkstra = new Dijkstra();
 		
 		try {
 			readInputGraphFromFile(inputGraphFileName);
-			readInputIPFromFile(inputIPFilename);
+			readInputIPFromFile(inputIPFileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,32 +39,6 @@ public class routing {
 		getShortestPath(dijkstra.getDestNode());
 		
 		executeRouting();
-		
-		
-//		BinaryTrie trie = new BinaryTrie();
-//		trie.insert("000", "alok");
-//		trie.insert("010", "alok");
-//		trie.insert("011", "alok");
-//		trie.insert("10", "nikita is lame");
-//		trie.insert("11", "nikita is so lame haha");
-//		
-//		trie.printTrie();
-//		trie.merge(trie.rootNode);
-//		System.out.println("after merge=====");
-//		trie.printTrie();
-//		
-//		trie.insert(convertIPToBinary("192.168.1.1"), "182.168.1.1");
-//		trie.insert(convertIPToBinary("192.122.1.1"), "182.168.1.1");
-//		trie.insert(convertIPToBinary("191.2.2.2"), "192.1.1.2");
-//		trie.insert(convertIPToBinary("191.3.2.2"), "193.1.1.2");
-//		trie.printTrie();
-//		TrieNode result = trie.search(convertIPToBinary("191.3.2.1"));
-//		String longestPrefix = result.getLongestPrefix(convertIPToBinary("191.3.2.1"));
-//		System.out.println(result.nextHopIP);
-//		System.out.println(longestPrefix);
-//		System.out.println(trie.convertIPToBinary("192.122.1.1"));
-//		System.out.println(trie.convertIPToBinary("191.2.2.2"));
-//		System.out.println(convertIPToBinary("191.3.2.2"));
 	}
 	
 	/*
@@ -81,7 +53,7 @@ public class routing {
 		
 		int source, destination, nextHop, finalDestination;
 		Router sourceRouter;
-		String finalDestinationIP;
+		String finalDestinationIP, finalPrefixResult = "";
 		
 		finalDestination = shortestPath.get(shortestPath.size()-1); //last element in the shortest path is the final dest.
 		finalDestinationIP = routerList.get(finalDestination).ipAddress;
@@ -99,8 +71,6 @@ public class routing {
 				if(destination != source){
 					//find shortest path from source to all other nodes.
 					dijkstra.findShortestPath(source, destination);
-//					System.out.println("source: " + source + " dest: " + destination);
-//					dijkstra.printPath();
 					
 					//get the next hop router for this pair of source and destination.
 					nextHop = dijkstra.getNextHopFromSourceToDest();
@@ -108,7 +78,7 @@ public class routing {
 					//now we have the source, destination, and nextHop. Get the ip now.
 					String destIp = routerList.get(destination).ipAddress;
 					String nextHopIp = routerList.get(nextHop).ipAddress;
-//					System.out.println("inserting into trie: " + destIp + ", " + nextHopIp);
+
 					//insert destination and next hop into the trie of the source.
 					sourceRoutingTable.insert(convertIPToBinary(destIp), nextHopIp);
 				}
@@ -117,15 +87,16 @@ public class routing {
 
 			//Print longest prefix match here, searching for the final destination.
 			TrieNode result = sourceRoutingTable.search(convertIPToBinary(finalDestinationIP));
-			System.out.println("prefix: " + result.prefix);
+			finalPrefixResult = finalPrefixResult + result.prefix + " ";
 		}
+		System.out.println(finalPrefixResult);
 	}
 	
 	
 	private static void getShortestPath(DijkstraNode destNode){
 		int path = destNode.getNodeId();
 		shortestPath.add(0, path);
-		System.out.println(destNode.getSourceDistance());
+		System.out.println((int)destNode.getSourceDistance());
 		
 		DijkstraNode parent = destNode.parentNode;
 		while(parent != null){
@@ -147,8 +118,9 @@ public class routing {
 			router.graphId = i;
 			routerList.add(i, router);
 			i++;
-			reader.readLine();
 		}
+		reader.close();
+		input_file.close();
 	}
 	
 	private static void readInputGraphFromFile(String inputFileName) throws Exception{
@@ -158,14 +130,9 @@ public class routing {
 		String line1 = reader.readLine();
 		int nodes = line1.charAt(0);
 		int edges = line1.charAt(2);
-		
-		while(reader.readLine() != null){
-			String line = reader.readLine();
-			if(line == null){
-				break;
-			}
+		String line;
+		while((line = reader.readLine()) != null){
 			String[] lineSplit = line.split(" ");
-			
 			int node1 = Integer.parseInt(lineSplit[0]);
 			int node2 = Integer.parseInt(lineSplit[1]);
 			double weight = Double.parseDouble(lineSplit[2]);
@@ -187,7 +154,6 @@ public class routing {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
 		return null;
 	}
 
