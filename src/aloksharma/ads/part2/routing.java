@@ -14,7 +14,7 @@ import aloksharma.ads.part1.Dijkstra;
 import aloksharma.ads.part1.DijkstraNode;
 
 
-public class Part2 {
+public class routing {
 
 	static Dijkstra dijkstra;
 	static ArrayList<Router> routerList = new ArrayList<>();

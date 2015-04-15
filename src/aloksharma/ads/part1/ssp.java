@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class UndirectedGraph {
+public class ssp {
 	static Dijkstra dijkstra;
 	
 	public static void main(String[] args) throws Exception {
@@ -55,7 +55,6 @@ public class UndirectedGraph {
 		}
 		reader.close();
 		input_file.close();
-		System.out.println("read the fucking file and inserted all into dijkstra");
 	}
 	
 	private static void writeOutputToFile(DijkstraNode dest) throws Exception{
