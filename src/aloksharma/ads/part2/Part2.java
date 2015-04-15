@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.sun.org.apache.xml.internal.utils.Trie;
-
 import aloksharma.ads.part1.Dijkstra;
 import aloksharma.ads.part1.DijkstraNode;
 
@@ -110,17 +108,16 @@ public class Part2 {
 					//now we have the source, destination, and nextHop. Get the ip now.
 					String destIp = routerList.get(destination).ipAddress;
 					String nextHopIp = routerList.get(nextHop).ipAddress;
-					System.out.println("inserting into trie: " + destIp + ", " + nextHopIp);
+//					System.out.println("inserting into trie: " + destIp + ", " + nextHopIp);
 					//insert destination and next hop into the trie of the source.
 					sourceRoutingTable.insert(convertIPToBinary(destIp), nextHopIp);
 				}
 			}
 			sourceRoutingTable.merge(sourceRoutingTable.rootNode);
-			sourceRoutingTable.printTrie();
+
 			//Print longest prefix match here, searching for the final destination.
 			TrieNode result = sourceRoutingTable.search(convertIPToBinary(finalDestinationIP));
-			String longestPrefix = result.getLongestPrefix(convertIPToBinary(finalDestinationIP));
-			System.out.println("prefix: " + longestPrefix);
+			System.out.println("prefix: " + result.prefix);
 		}
 	}
 	
@@ -128,6 +125,7 @@ public class Part2 {
 	private static void getShortestPath(DijkstraNode destNode){
 		int path = destNode.getNodeId();
 		shortestPath.add(0, path);
+		System.out.println(destNode.getSourceDistance());
 		
 		DijkstraNode parent = destNode.parentNode;
 		while(parent != null){

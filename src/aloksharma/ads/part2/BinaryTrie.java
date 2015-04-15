@@ -109,7 +109,7 @@ public class BinaryTrie {
 			}
 		}
 		
-		return null;
+		return currNode;
 	}
 	
 	/*
@@ -129,43 +129,46 @@ public class BinaryTrie {
 	/*
 	 * currNode = rootNode
 	 */
-	final String DONT_MERGE = "dont merge";
-	public String merge(TrieNode currNode){
+	final TrieNode DONT_MERGE = new TrieNode();
+	public TrieNode merge(TrieNode currNode){
 		if(currNode == null){
 			return null;
 		}else if(!currNode.isLeaf){
 			//I'm not a leaf node. Do the post order traversal and get the value of my children.
-			String leftNextHop = merge(currNode.leftChild);
-			String rightNextHop= merge(currNode.rightChild);
+			TrieNode leftNextHop = merge(currNode.leftChild);
+			TrieNode rightNextHop= merge(currNode.rightChild);
 
 			if(leftNextHop == DONT_MERGE || rightNextHop == DONT_MERGE){
 				return DONT_MERGE;
 			}else if(leftNextHop == null){
 				//my left child is null, take value of my right child
 				currNode.isLeaf = true;
-				currNode.nextHopIP = rightNextHop;
+				currNode.nextHopIP = rightNextHop.nextHopIP;
+				currNode.destinationIP = rightNextHop.destinationIP;
 				currNode.rightChild = null;
 				currNode.leftChild = null;
 			}else if(rightNextHop == null){
 				//my right child is null, take value of my left child
 				currNode.isLeaf = true;
-				currNode.nextHopIP = leftNextHop;
+				currNode.nextHopIP = leftNextHop.nextHopIP;
+				currNode.destinationIP = leftNextHop.destinationIP;
 				currNode.rightChild = null;
 				currNode.leftChild = null;
-			}else if(leftNextHop == rightNextHop){
+			}else if(leftNextHop.nextHopIP.equals(rightNextHop.nextHopIP)){
 				//Both children same. Make me the child, and take either childs value.
 				currNode.isLeaf = true;
-				currNode.nextHopIP = leftNextHop; //or rightNextHop
+				currNode.nextHopIP = leftNextHop.nextHopIP; //or rightNextHop
+				currNode.destinationIP = leftNextHop.destinationIP;
 				currNode.rightChild = null;
 				currNode.leftChild = null;
 			}else{
 				//children werent same, parent cannot merge me.
 				return DONT_MERGE;
 			}
-			return currNode.nextHopIP;
+			return currNode;
 		}else{
 			//I'm a leaf node, just return my value.
-			return currNode.nextHopIP;
+			return currNode;
 		}
 	}
 	
