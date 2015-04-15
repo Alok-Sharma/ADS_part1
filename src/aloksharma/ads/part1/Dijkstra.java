@@ -10,12 +10,10 @@ public class Dijkstra {
 
 	int source;
 	int destination;
-//	ArrayList<DijkstraNode> nodeList = new ArrayList<>();
 	HashMap<Integer, DijkstraNode> nodeList = new HashMap<>(); //integer hold node id.
 	
-	public Dijkstra(int source, int destination){
-		this.source = source;
-		this.destination = destination;
+	public HashMap<Integer, DijkstraNode> getAllNodes(){
+		return nodeList;
 	}
 	
 	public void insertEdge(int node1, int node2, double weight){
@@ -42,7 +40,20 @@ public class Dijkstra {
 		dnode2.addNeighbour(dnode1, weight);
 	}
 	
-	public void findShortestPath(){
+	private void resetNodes(){
+		//iterate over all nodes in the nodelist and call their reset function.
+		Iterator<Integer> allDijkstraNodes = nodeList.keySet().iterator();
+		DijkstraNode tempNode;
+		while(allDijkstraNodes.hasNext()){
+			tempNode = nodeList.get(allDijkstraNodes.next());
+			tempNode.resetNode();
+		}
+	}
+	
+	public void findShortestPath(int source, int destination){
+		this.source = source;
+		this.destination = destination;
+		resetNodes();
 		DijkstraNode sourceNode = nodeList.get(source);
 		sourceNode.setSourceDistance(0);
 		DijkstraNode destNode = nodeList.get(destination);
@@ -59,23 +70,22 @@ public class Dijkstra {
 			
 			heap.insertNode(nodeId, sourceDist);
 		}
-		System.out.println("added all nodes to the heap, iterating over them now.");
+//		System.out.println("added all nodes to the heap, iterating over them now.");
 		
-		//store all nodes that are on your shortes path in here:
+		//store all nodes that are on your shortest path in here:
 		ArrayList<DijkstraNode> pathNodes = new ArrayList<>();
 		
 		//for every vertex in the graph
 		Iterator<Integer> dijkstraNodes = nodeList.keySet().iterator();
-//		System.out.println("path: ");
 		while(dijkstraNodes.hasNext()){
-			//remove the minimum element
+			//remove the minimum element from heap/
 			dijkstraNodes.next();
 			HeapNode minHeapNode = heap.removeMin();
 			DijkstraNode pathNode = nodeList.get(minHeapNode.getData());
 			pathNodes.add(pathNode);
 			
+			//Stop calculating when reached destination.
 			if(pathNode.getNodeId() == destNode.getNodeId()){
-				System.out.println("reached destination");
 				break;
 			}
 			
@@ -83,7 +93,7 @@ public class Dijkstra {
 			HashMap<DijkstraNode, Double> neighbours =  pathNode.getAllNeighbours();
 			
 			//remove nodes that are already on the shortest path.
-			neighbours = removeFromNeighbours(neighbours, pathNodes);
+//			neighbours = removeFromNeighbours(neighbours, pathNodes);
 			
 			Iterator<DijkstraNode> neighbourIterator = neighbours.keySet().iterator();
 			while(neighbourIterator.hasNext()){
@@ -128,6 +138,20 @@ public class Dijkstra {
 	
 	public DijkstraNode getDestNode(){
 		return nodeList.get(destination);
+	}
+	
+	public int getNextHopFromSourceToDest(){
+		//from dest, go back to source.
+		DijkstraNode currNode = this.getDestNode();
+		DijkstraNode parent = currNode.parentNode;
+		if(parent == null){
+			System.out.println("parent is null for " + this.getDestNode().nodeId + " source: " + this.source);
+		}
+		while(parent.nodeId != this.source){
+			currNode = parent;
+			parent = parent.parentNode;
+		}
+		return currNode.getNodeId();
 	}
 	
 	

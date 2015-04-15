@@ -12,7 +12,12 @@ public class DijkstraNode {
 	public DijkstraNode(int id){
 		this.nodeId = id;
 		this.parentNode = null;
-		sourceDistance = Double.POSITIVE_INFINITY;
+		this.sourceDistance = Double.POSITIVE_INFINITY;
+	}
+	
+	public void resetNode(){
+		this.parentNode = null;
+		this.sourceDistance = Double.POSITIVE_INFINITY;
 	}
 	
 	public void addNeighbour(DijkstraNode node, double distance){

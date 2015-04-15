@@ -1,12 +1,8 @@
 package aloksharma.ads.part2;
 
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.sun.org.apache.xml.internal.utils.Trie;
 
 public class BinaryTrie {
 	public TrieNode rootNode;
@@ -54,6 +50,7 @@ public class BinaryTrie {
 					TrieNode newIntermediateNode = new TrieNode();
 					newIntermediateNode.isLeaf = false;
 					newIntermediateNode.level = parent.level + 1;
+					newIntermediateNode.parentNode = parent;
 					
 					//BE CAREFUL, NOT USING ADDCHILD FUNCTION HERE!
 					if(currDestSubstring.charAt(i) == '0'){
@@ -132,7 +129,7 @@ public class BinaryTrie {
 	/*
 	 * currNode = rootNode
 	 */
-	String DONT_MERGE = "dont merge";
+	final String DONT_MERGE = "dont merge";
 	public String merge(TrieNode currNode){
 		if(currNode == null){
 			return null;
@@ -144,25 +141,27 @@ public class BinaryTrie {
 			if(leftNextHop == DONT_MERGE || rightNextHop == DONT_MERGE){
 				return DONT_MERGE;
 			}else if(leftNextHop == null){
+				//my left child is null, take value of my right child
 				currNode.isLeaf = true;
 				currNode.nextHopIP = rightNextHop;
 				currNode.rightChild = null;
 				currNode.leftChild = null;
 			}else if(rightNextHop == null){
+				//my right child is null, take value of my left child
 				currNode.isLeaf = true;
 				currNode.nextHopIP = leftNextHop;
 				currNode.rightChild = null;
 				currNode.leftChild = null;
 			}else if(leftNextHop == rightNextHop){
-				//make me the child, and take that value.
+				//Both children same. Make me the child, and take either childs value.
 				currNode.isLeaf = true;
 				currNode.nextHopIP = leftNextHop; //or rightNextHop
 				currNode.rightChild = null;
 				currNode.leftChild = null;
 			}else{
+				//children werent same, parent cannot merge me.
 				return DONT_MERGE;
 			}
-			
 			return currNode.nextHopIP;
 		}else{
 			//I'm a leaf node, just return my value.
@@ -177,9 +176,9 @@ public class BinaryTrie {
 		while(!q.isEmpty()){
 			currNode = q.remove();
 			if(!currNode.isLeaf){
-				System.out.println(currNode.prefix);
+//				System.out.println("Internal node at: " + currNode.prefix);
 			}else{
-				System.out.println(currNode.prefix + " next hop:" + currNode.nextHopIP);
+				System.out.println("Leaf at: " + currNode.prefix + " next hop:" + currNode.nextHopIP);
 			}
 			
 			if(currNode.leftChild != null){

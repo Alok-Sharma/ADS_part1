@@ -12,22 +12,22 @@ public class UndirectedGraph {
 	public static void main(String[] args) throws Exception {
 		
 //		String inputFileName = "input_5000_1_part1.txt";
-//		String inputFileName = "sample_input_part1.txt";
+		String inputFileName = "sample_input_part1.txt";
 //		String inputFileName = "input_1000_50_part1.txt";
-		String inputFileName = "input_1000000.txt";
+//		String inputFileName = "input_1000000.txt";
 		
-		int source = 0;
-		int dest = 999999;
-//		int dest = 999;
+		int source = 2;
+//		int dest = 999999;
+		int dest = 0;
 		
 //		String inputFileName = args[0];
 //		int source = Integer.parseInt(args[1]);
 //		int dest = Integer.parseInt(args[2]);
 		
-		dijkstra = new Dijkstra(source, dest);
+		dijkstra = new Dijkstra();
 		readInputFromFile(inputFileName);
 //		dijkstra.printGraph();
-		dijkstra.findShortestPath();
+		dijkstra.findShortestPath(source, dest);
 //		dijkstra.printPath();
 		writeOutputToFile(dijkstra.getDestNode());
 	}
@@ -40,27 +40,22 @@ public class UndirectedGraph {
 		String line1 = reader.readLine();
 		int nodes = line1.charAt(0);
 		int edges = line1.charAt(2);
-		
-		while(reader.readLine() != null){
-			String line = reader.readLine();
-			if(line == null){
-				break;
-			}
+		String line;
+		while((line = reader.readLine()) != null){
+//			if(line == null){
+//				break;
+//			}
+			line = reader.readLine();
 			String[] lineSplit = line.split(" ");
 			
 			int node1 = Integer.parseInt(lineSplit[0]);
 			int node2 = Integer.parseInt(lineSplit[1]);
 			double weight = Double.parseDouble(lineSplit[2]);
-			makeEdge(node1, node2, weight);
+			dijkstra.insertEdge(node1, node2, weight);
 		}
 		reader.close();
 		input_file.close();
 		System.out.println("read the fucking file and inserted all into dijkstra");
-	}
-	
-	private static void makeEdge(int node1, int node2, double weight){
-//		System.out.println("node1: " + node1 + " node2: " + node2 + " weight: " + weight);
-		dijkstra.insertEdge(node1, node2, weight);
 	}
 	
 	private static void writeOutputToFile(DijkstraNode dest) throws Exception{
