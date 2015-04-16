@@ -3,27 +3,39 @@ package aloksharma.ads.part1;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
+/*
+ * The undirected graph on which we run our Dijkstras algorithm.
+ */
 public class Dijkstra {
 
 	int source;
 	int destination;
 	HashMap<Integer, DijkstraNode> nodeList = new HashMap<>(); //integer hold node id.
 	
+	/**
+	 * 
+	 * @return Complete map of all nodes within this graph.
+	 */
 	public HashMap<Integer, DijkstraNode> getAllNodes(){
 		return nodeList;
 	}
 	
+	/**
+	 * Insert edges into this graph. If nodes already exist within the graph, a new edge is simply added to 
+	 * them.
+	 * @param node1 Name of node1 to insert
+	 * @param node2 Name of node2 to insert
+	 * @param weight Weight of the edge between node1 and node2
+	 */
 	public void insertEdge(int node1, int node2, double weight){
 		DijkstraNode dnode1;
 		DijkstraNode dnode2;
 		
+		//Make a new node, only if node doesnt already exist within nodeList.
 		if(!nodeList.containsKey(node1)){
 			dnode1 = new DijkstraNode(node1);
 			nodeList.put(node1, dnode1);
-//			nodeList.add(dnode1.getNodeId(), dnode1); //storing the ith node at the ith position.
 		}else{
 			dnode1 = nodeList.get(node1);
 		}
@@ -31,17 +43,19 @@ public class Dijkstra {
 		if(!nodeList.containsKey(node2)){
 			dnode2 = new DijkstraNode(node2);
 			nodeList.put(node2, dnode2);
-//			nodeList.add(dnode2.getNodeId(), dnode2);
 		}else{
 			dnode2 = nodeList.get(node2);
 		}
 		
+		//Add the two nodes in each others adjaceny list.
 		dnode1.addNeighbour(dnode2, weight);
 		dnode2.addNeighbour(dnode1, weight);
 	}
 	
-	/*
-	 * Called to rest each nodes 
+	/**
+	 * Reset the node properties for each node. Use this if we are going to be running
+	 * over the Dijktstra algorithm multiple times. Each time it is run, we need to
+	 * reset the distance and parent parameters for each node.
 	 */
 	private void resetNodes(){
 		//iterate over all nodes in the nodelist and call their reset function.
@@ -53,6 +67,13 @@ public class Dijkstra {
 		}
 	}
 	
+	/**
+	 * Executes the Dijkstra algorithm from the source to the destination. At the end of this,
+	 * the destination node will have its parent node property set. We can then reverse traverse from
+	 * the destination, back to the source and determine the shortest path.
+	 * @param source
+	 * @param destination
+	 */
 	public void findShortestPath(int source, int destination){
 		this.source = source;
 		this.destination = destination;
@@ -126,22 +147,34 @@ public class Dijkstra {
 		return neighbours;
 	}
 	
+	/**
+	 * Iterates in reverse from the destination node, back to the source, printing out the path in reverse.
+	 */
 	public void printPath(){
 		DijkstraNode destNode = nodeList.get(destination);
 		System.out.println("path of length: " + destNode.getSourceDistance());
 		System.out.println(destNode.getNodeId());
 		DijkstraNode parent = destNode.parentNode;
 		
+		//parent will be null for the source node only.
 		while(parent != null){
 			System.out.println(parent.getNodeId());
 			parent = parent.parentNode;
 		}
 	}
 	
+	/**
+	 * @return The destination node. Can be used to iterate backwards to source.
+	 */
 	public DijkstraNode getDestNode(){
 		return nodeList.get(destination);
 	}
 	
+	/**
+	 * Traverses in reverse from the destination node back to the source, and the node immediately
+	 * after the source on the shortest path.
+	 * @return name of the node immediately after the source, on the shortest path to the destination.
+	 */
 	public int getNextHopFromSourceToDest(){
 		//from dest, go back to source.
 		DijkstraNode currNode = this.getDestNode();
@@ -156,7 +189,9 @@ public class Dijkstra {
 		return currNode.getNodeId();
 	}
 	
-	
+	/**
+	 * For debug purposes, to check correctness of the constructed graph.
+	 */
 	public void printGraph(){
 		Iterator<Integer> iterator = nodeList.keySet().iterator();
 		DijkstraNode node;

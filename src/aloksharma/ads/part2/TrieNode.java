@@ -1,5 +1,10 @@
 package aloksharma.ads.part2;
 
+/**
+ * Class representing a single node in the binary trie.
+ * @author alsharma
+ *
+ */
 public class TrieNode {
 	boolean isLeaf;
 	String nextHopIP;
@@ -8,7 +13,7 @@ public class TrieNode {
 	TrieNode rightChild;
 	TrieNode parentNode;
 	String prefix;
-	int level;
+	int level; //The level at which this node is present at in the trie. The root node is at level 0. 
 	
 	public TrieNode() {
 		this.leftChild = null;
@@ -21,6 +26,10 @@ public class TrieNode {
 		this.prefix = "";
 	}
 	
+	/**
+	 * Check if this node has any children.
+	 * @return true if has a left or right child. Else false.
+	 */
 	public boolean hasChild(){
 		if(this.leftChild != null || this.rightChild != null){
 			return true;
@@ -29,7 +38,12 @@ public class TrieNode {
 		}
 	}
 	
-	//whoever calls me better know if I already have children.
+	/**
+	 * Add a new child to this node. This function will check itself if the new child
+	 * should be a left or a right child depending on the appropraite bit and the 
+	 * level at which I am present in the trie. Update the prefixes of my child.
+	 * @param child The new child to add.
+	 */
 	public void addChild(TrieNode child){
 		//check the level at which you are at. Get that ith bit
 		//if that bit is 0-> left child, else right child.
@@ -46,18 +60,5 @@ public class TrieNode {
 		child.level = this.level + 1;
 		child.parentNode = this;
 	}
-	
-	public String getLongestPrefix(String inputDestinationIP){
-		int i = 0;
-		for(i = 0; i < inputDestinationIP.length(); i++){
-			if(inputDestinationIP.charAt(i) != this.destinationIP.charAt(i)){
-				break;
-			}
-		}
-		
-		return inputDestinationIP.substring(0, i);
-	}
-	
-	
 }
  

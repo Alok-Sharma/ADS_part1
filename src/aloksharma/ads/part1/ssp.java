@@ -11,7 +11,7 @@ public class ssp {
 		String inputFileName = args[0];
 		int source = Integer.parseInt(args[1]);
 		int dest = Integer.parseInt(args[2]);
-		
+
 		dijkstra = new Dijkstra();
 		readInputFromFile(inputFileName);
 //		dijkstra.printGraph();
@@ -20,7 +20,12 @@ public class ssp {
 		writeOutputToConsole(dijkstra.getDestNode());
 	}
 	
-
+	/**
+	 * Reads the node and edge weights from the inputFileName, and populates the undirected graph
+	 * with those values.
+	 * @param inputFileName Path to the file to read input from.
+	 * @throws Exception
+	 */
 	private static void readInputFromFile(String inputFileName) throws Exception{
 		FileReader input_file = new FileReader(inputFileName);
 		BufferedReader reader = new BufferedReader(input_file);
@@ -41,6 +46,13 @@ public class ssp {
 		input_file.close();
 	}
 	
+	/**
+	 * Traverses the reverse path from the destination DijkstraNode back to the source.
+	 * Prints out the total distance from source to destination, and the complete 
+	 * traversed path.
+	 * @param dest The destination DijkstraNode from where the reverse traversal will begin from, and end at the source node.
+	 * @throws Exception
+	 */
 	private static void writeOutputToConsole(DijkstraNode dest) throws Exception{
 		String distance = (int)dest.getSourceDistance() + "";
 		String path = dest.getNodeId() + "";

@@ -3,15 +3,29 @@ package aloksharma.ads.part2;
 import java.util.LinkedList;
 import java.util.Queue;
 
-
+/**
+ * Class representing a BinaryTrie containing leaf and non-leaf nodes.
+ * Only the leaf nodes contain the data. In this case, our data is the destination IP address
+ * and the next hop IP address.
+ * @author alsharma
+ */
 public class BinaryTrie {
 	public TrieNode rootNode;
 	
+	/**
+	 * Initialize the trie with a new root node.
+	 */
 	public BinaryTrie(){
 		rootNode = new TrieNode();
 		rootNode.isLeaf = false;
 	}
 	
+	/**
+	 * Insert new data into the trie. Each leaf has two data values within it, the 
+	 * destination IP address, and the next hop IP address.
+	 * @param destinationIP
+	 * @param nextHop
+	 */
 	public void insert(String destinationIP, String nextHop){
 		TrieNode currNode = search(destinationIP);
 		
@@ -70,15 +84,14 @@ public class BinaryTrie {
 			 */
 			parent.addChild(newNode);
 			parent.addChild(currNode); //Hopefully these two wouldve been put as left and right children, instead of just fighting for the same spot.
-//			System.out.println("added child after splits");
 		}
 	}
 	
-	/*
-	 * returns TrieNode where search ended. If the returned TrieNode
+	/**
+	 * @param destinationIP The destinaion IP to search for in the trie.
+	 * @return The TrieNode where search ended. If the returned TrieNode
 	 * has isLeaf true, then there is a nextHopIP for this destinationIP,
 	 * else, I found no rule for this destination. Longest prefix matched TrieNode will be returned.
-	 * 
 	 */
 	public TrieNode search(String destinationIP){
 		//break the destinationIP. 
@@ -111,9 +124,11 @@ public class BinaryTrie {
 		
 		return currNode;
 	}
-	
-	/*
-	 * Returns the nextHopIP address only if the destinationIP was found.
+
+	/**
+	 * Used for debugging purposes only.
+	 * @param destinationIP
+	 * @return Returns the nextHopIP address only if the complete destinationIP was found (not longest prefix match.
 	 * If you want to use longest prefix matching, then use the search() function instead.
 	 */
 	public String searchExactDestination(String destinationIP){
@@ -126,10 +141,10 @@ public class BinaryTrie {
 		}
 	}
 	
-	/*
-	 * currNode = rootNode
+	/**
+	 * Merges all children of a parent which have the same next hop IP address.
 	 */
-	final TrieNode DONT_MERGE = new TrieNode();
+	final TrieNode DONT_MERGE = new TrieNode(); //Flag to propagate upwards to tell parent not to merge children.
 	public TrieNode merge(TrieNode currNode){
 		if(currNode == null){
 			return null;
@@ -172,6 +187,9 @@ public class BinaryTrie {
 		}
 	}
 	
+	/**
+	 * Used for debugging purposes. Prints the entire trie.
+	 */
 	public void printTrie(){
 		TrieNode currNode;
 		Queue<TrieNode> q = new LinkedList<TrieNode>();
@@ -192,7 +210,6 @@ public class BinaryTrie {
 //				System.out.println("right: " + currNode.rightChild.level);
 				q.add(currNode.rightChild);
 			}
-			
 		}
 	}
 }

@@ -41,12 +41,12 @@ public class routing {
 		executeRouting();
 	}
 	
-	/*
-	 * For each node in the shortestPath list, find route to every other node in the graph.
-	 * Then get the next hop router for each destination.
-	 * Insert the destination, and next hop into the trie for this source node. Do this for all destinations (ie all nodes)
-	 * Get longest prefix match from this source to the next router on the shortest path to the final destination.
-	 * Go to the next hop router now and repeat.
+	/**
+	 * - For each node in the shortestPath list, find route to every other node in the graph.
+	 * - Then get the next hop router for each destination.
+	 * - Insert the destination, and next hop into the trie for this source node. Do this for all destinations (ie all nodes)
+	 * - Get longest prefix match from this source to the next router on the shortest path to the final destination.
+	 * - Go to the next hop router now and repeat.
 	 */
 	private static void executeRouting(){
 		HashMap<Integer, DijkstraNode> allNodes = dijkstra.getAllNodes();
@@ -92,7 +92,11 @@ public class routing {
 		System.out.println(finalPrefixResult);
 	}
 	
-	
+	/**
+	 * populate the shortest path list with the nodes on the shortest path.
+	 * @param destNode Destination node of the Dijkstra algorithm from where we will
+	 * traverse in reverse all the way to the source.
+	 */
 	private static void getShortestPath(DijkstraNode destNode){
 		int path = destNode.getNodeId();
 		shortestPath.add(0, path);
@@ -106,6 +110,11 @@ public class routing {
 		}
 	}
 	
+	/**
+	 * Reads the file containing the ip addresses
+	 * @param inputFileName
+	 * @throws Exception
+	 */
 	private static void readInputIPFromFile(String inputFileName) throws Exception{
 		FileReader input_file = new FileReader(inputFileName);
 		BufferedReader reader = new BufferedReader(input_file);
@@ -113,16 +122,26 @@ public class routing {
 		String ip;
 		
 		while((ip = reader.readLine()) != null){
-			Router router = new Router();
-			router.ipAddress = ip;
-			router.graphId = i;
-			routerList.add(i, router);
-			i++;
+			if(ip.equals("")){
+				//empty line, do nothing.
+			}else{
+
+				Router router = new Router();
+				router.ipAddress = ip;
+				router.graphId = i;
+				routerList.add(i, router);
+				i++;
+			}
 		}
 		reader.close();
 		input_file.close();
 	}
 	
+	/**
+	 * Reads the input file containing the graph nodes and populates our undirected graph with it.
+	 * @param inputFileName
+	 * @throws Exception
+	 */
 	private static void readInputGraphFromFile(String inputFileName) throws Exception{
 		FileReader input_file = new FileReader(inputFileName);
 		BufferedReader reader = new BufferedReader(input_file);
@@ -132,18 +151,24 @@ public class routing {
 		int edges = line1.charAt(2);
 		String line;
 		while((line = reader.readLine()) != null){
-			String[] lineSplit = line.split(" ");
-			int node1 = Integer.parseInt(lineSplit[0]);
-			int node2 = Integer.parseInt(lineSplit[1]);
-			double weight = Double.parseDouble(lineSplit[2]);
-			dijkstra.insertEdge(node1, node2, weight);
+			if(line.equals("")){
+				//do nothing.
+			}else{			
+				String[] lineSplit = line.split(" ");
+				int node1 = Integer.parseInt(lineSplit[0]);
+				int node2 = Integer.parseInt(lineSplit[1]);
+				double weight = Double.parseDouble(lineSplit[2]);
+				dijkstra.insertEdge(node1, node2, weight);
+			}
 		}
 		reader.close();
 		input_file.close();
 	}
 	
-	/*
-	 * Converts String ip to binary, duh.
+	/**
+	 * Helper function to convert our IP strings to a binary string representation.
+	 * @param inputIp A valid ip address.
+	 * @return
 	 */
 	public static String convertIPToBinary(String inputIp){
 		byte[] bytes;
@@ -156,5 +181,4 @@ public class routing {
 		}
 		return null;
 	}
-
 }

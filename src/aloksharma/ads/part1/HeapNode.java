@@ -1,5 +1,10 @@
 package aloksharma.ads.part1;
 
+/**
+ * Class representing a single node in the Fibonacci heap.
+ * @author alsharma
+ *
+ */
 public class HeapNode {
 	private int data;
 	public int degree;

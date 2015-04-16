@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-//merge function not implemented.
 public class FibonacciHeap {
 	
 	HeapNode minNode = null;
 	HashMap<Integer, HeapNode> nodeList = new HashMap<>();
 	int heapSize = 0;
 	
+	/**
+	 * Inserts a new HeapNode with the argument values into the heap. This function internally calls
+	 * mergeLists to merge the new node in the top level list.
+	 * @param data of the new node.
+	 * @param priority priority of the new node.
+	 * @return HeapNode instance of the newly inserted node.
+	 */
 	public HeapNode insertNode(int data, double priority){
 		HeapNode newNode = new HeapNode(data, priority);
 		minNode = mergeLists(minNode, newNode);
@@ -31,6 +37,9 @@ public class FibonacciHeap {
 		return heapSize;
 	}
 	
+	/**
+	 * @return The minimum node in the heap. Also removes it from the heap.
+	 */
 	public HeapNode removeMin(){
 		if(minNode == null)
 			return null;
@@ -38,18 +47,19 @@ public class FibonacciHeap {
 		HeapNode minCopy = minNode;
 		heapSize--;
 		
-		//case 1, min node is alone.
+		//case 1 min node is alone in the heap.
 		if(minNode.next == minNode){
 			minNode = null; //remove it.
 		}
+		
 		//case 2, connect the neighbours of min node together.
 		else{ 
 			minNode.prev.next = minNode.next;
 			minNode.next.prev = minNode.prev;
 			minNode = minNode.next;
 		}
+
 		//at this point minNode is some arbit sibling of the min element, in the topmost list.
-		
 		//clear parent field of all children of minNode.
 		if(minCopy.child != null){
 			HeapNode child = minCopy.child;
@@ -63,7 +73,7 @@ public class FibonacciHeap {
 		if(minNode == null)
 			return minCopy;
 		
-		//merge children of min node. Subtress of same degrees need to be merged. All then should be put in top list.
+		//merge children of min node. Subtrees of same degrees need to be merged. All then should be put in top list.
 		//To keep track of trees with varied degrees, keep in arraylist, where index is their degree.
 		//If more than 1 sub tree of same degree, merge them first.
 		List<HeapNode> treeTable = new ArrayList<>();
@@ -113,6 +123,12 @@ public class FibonacciHeap {
 		
 	}
 	
+	/**
+	 * Merges two linked lists rooted at the two HeapNodes.
+	 * @param one 
+	 * @param two
+	 * @return pointer to smaller node of the merged list.
+	 */
 	private HeapNode mergeLists(HeapNode one, HeapNode two){
 		if(one == null && two == null){
 			return null;
@@ -152,10 +168,17 @@ public class FibonacciHeap {
 		}
 	}
 	
+	/**
+	 * Decreases the priority of the specified heap node.
+	 * @param node
+	 * @param newPriority
+	 */
 	public void decreaseKey(HeapNode node, double newPriority){
-		if(newPriority > node.priority)
-			System.err.println("New priority exceeds old");
-		
+		if(newPriority > node.priority){
+			//this is a problem.
+			System.out.println("invalid new priority");
+			return; 
+		}
 		node.priority = newPriority;
 		if(node.parent != null && node.priority <= node.parent.priority)
 			removeNode(node);
@@ -164,6 +187,11 @@ public class FibonacciHeap {
 			minNode = node;
 	}
 	
+	/**
+	 * Remove a specific node from the heap, and places it into the topmost list. This is a private method and
+	 * is only used internally by decrease key only.
+	 * @param node
+	 */
 	private void removeNode(HeapNode node){
 		node.childCut = false;
 		
@@ -197,9 +225,12 @@ public class FibonacciHeap {
 		node.parent = null;
 	}
 	
+	/**
+	 * Public method used for deleting a specific node completely from the heap.
+	 * @param node
+	 */
 	public void deleteNode(HeapNode node){
 		decreaseKey(node, Double.NEGATIVE_INFINITY);
-		
 		removeMin();
 	}
 	
